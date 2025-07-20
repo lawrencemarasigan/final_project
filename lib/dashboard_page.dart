@@ -84,7 +84,7 @@ class _DashboardPageState extends State<DashboardPage> {
         barRods: [
           BarChartRodData(
             toY: entry.value.toDouble(),
-            width: 16,
+            width: 12, // Narrow bar for small screens
             color: Colors.green,
             borderRadius: BorderRadius.circular(4),
           ),
@@ -225,42 +225,48 @@ class _DashboardPageState extends State<DashboardPage> {
                     const SizedBox(height: 12),
                     SizedBox(
                       height: 300,
-                      child: BarChart(
-                        BarChartData(
-                          alignment: BarChartAlignment.spaceAround,
-                          barTouchData: BarTouchData(enabled: true),
-                          titlesData: FlTitlesData(
-                            leftTitles: AxisTitles(
-                              sideTitles: SideTitles(showTitles: true, reservedSize: 28),
-                            ),
-                            bottomTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                getTitlesWidget: (value, meta) {
-                                  switch (selectedFilter) {
-                                    case 'Today':
-                                      return Text('${value.toInt()}h');
-                                    case 'This Month':
-                                      return Text('${value.toInt()}');
-                                    case 'This Year':
-                                      const monthNames = [
-                                        '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-                                      ];
-                                      final month = value.toInt();
-                                      if (month >= 1 && month <= 12) {
-                                        return Text(monthNames[month]);
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: SizedBox(
+                          width: selectedFilter == 'This Month' ? 900 : MediaQuery.of(context).size.width,
+                          child: BarChart(
+                            BarChartData(
+                              alignment: BarChartAlignment.spaceEvenly,
+                              barTouchData: BarTouchData(enabled: true),
+                              titlesData: FlTitlesData(
+                                leftTitles: AxisTitles(
+                                  sideTitles: SideTitles(showTitles: true, reservedSize: 28),
+                                ),
+                                bottomTitles: AxisTitles(
+                                  sideTitles: SideTitles(
+                                    showTitles: true,
+                                    getTitlesWidget: (value, meta) {
+                                      switch (selectedFilter) {
+                                        case 'Today':
+                                          return Text('${value.toInt()}h');
+                                        case 'This Month':
+                                          return Text('${value.toInt()}');
+                                        case 'This Year':
+                                          const monthNames = [
+                                            '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                                            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+                                          ];
+                                          final month = value.toInt();
+                                          if (month >= 1 && month <= 12) {
+                                            return Text(monthNames[month]);
+                                          }
+                                          return const Text('');
+                                        default:
+                                          return const Text('');
                                       }
-                                      return const Text('');
-                                    default:
-                                      return const Text('');
-                                  }
-                                },
+                                    },
+                                  ),
+                                ),
                               ),
+                              borderData: FlBorderData(show: false),
+                              barGroups: _generateBarData(),
                             ),
                           ),
-                          borderData: FlBorderData(show: false),
-                          barGroups: _generateBarData(),
                         ),
                       ),
                     ),
@@ -295,7 +301,7 @@ class _DashboardPageState extends State<DashboardPage> {
               return const SchedulePage();
             } else if (currentPage == 'Report') {
               return const ReportPage();
-              } else if (currentPage == 'Logs') {
+            } else if (currentPage == 'Logs') {
               return const LogsPage();
             } else {
               return Center(
