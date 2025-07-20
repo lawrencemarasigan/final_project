@@ -46,7 +46,7 @@ class _DashboardPageState extends State<DashboardPage> {
       if (selectedFilter == 'Today') {
         return date.year == now.year && date.month == now.month && date.day == now.day;
       } else if (selectedFilter == 'This Month') {
-        return date.year == now.year && date.month == now.month;
+        return date.year == now.year && date.month == now.month && date.day <= 15;
       } else if (selectedFilter == 'This Year') {
         return date.year == now.year;
       }
@@ -66,7 +66,7 @@ class _DashboardPageState extends State<DashboardPage> {
       }
     } else if (selectedFilter == 'This Month') {
       for (var date in successfulSurgeries) {
-        if (date.year == now.year && date.month == now.month) {
+        if (date.year == now.year && date.month == now.month && date.day <= 15) {
           groupedData.update(date.day, (value) => value + 1, ifAbsent: () => 1);
         }
       }
@@ -84,7 +84,7 @@ class _DashboardPageState extends State<DashboardPage> {
         barRods: [
           BarChartRodData(
             toY: entry.value.toDouble(),
-            width: 12, // Narrow bar for small screens
+            width: 20, // Adjusted width
             color: Colors.green,
             borderRadius: BorderRadius.circular(4),
           ),
@@ -228,7 +228,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: SizedBox(
-                          width: selectedFilter == 'This Month' ? 900 : MediaQuery.of(context).size.width,
+                          width: selectedFilter == 'This Month' ? 750 : MediaQuery.of(context).size.width,
                           child: BarChart(
                             BarChartData(
                               alignment: BarChartAlignment.spaceEvenly,
